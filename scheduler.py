@@ -20,34 +20,37 @@ def find_time_slots(busy_p1, bound_p1, busy_p2, bound_p2, time_requested):
     busy = merge(schedule_p1, schedule_p2)
     available = free_slots(busy, time_requested)
 
-    return convert_to_schedule_array(available)
+    return to_schedule_list(available)
 
 
-def convert_to_minutes(time_string):
+def to_minutes(time_string):
     hours = int(time_string.split(":")[0])
     minutes = int(time_string.split(":")[1])
     return hours * 60 + minutes
 
-
+def to_hour_string(minutes_sum):
+    hours = minutes_sum // 60 % 24
+    minutes = minutes_sum % 60
+    return f'{hours:02}:{minutes:02}'
+    
 def busy_number_list(busy_array, boundary_time):
-    number_list = [[0, convert_to_minutes(boundary_time[0])]]
+    number_list = [[0, to_minutes(boundary_time[0])]]
     for slot in busy_array:
         number_list.append([
-            convert_to_minutes(slot[0]),
-            convert_to_minutes(slot[1])
+            to_minutes(slot[0]),
+            to_minutes(slot[1])
         ])
-    number_list.append([convert_to_minutes(boundary_time[1]), 1440])
+    number_list.append([to_minutes(boundary_time[1]), 1440])
     return number_list
 
-
-def merge(s1, s2):
-
+def merge(number_list_1, number_list_2):
     return
-
 
 def free_slots(busy_times, duration):
     return
 
-
-def convert_to_schedule_array(number_array):
-    return 
+def to_schedule_list(number_array):
+    schedule_list = []
+    for slot in number_array:
+        schedule_list.append([to_hour_string(slot[0]), to_hour_string(slot[1])])
+    return schedule_list
