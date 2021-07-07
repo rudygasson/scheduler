@@ -1,8 +1,8 @@
 import scheduler 
 
 def test_find_time_slots():
-    BUSY_1 = [["9:00","10:30"], ["11:30","12:30"], ["13:30","15:00"], ["9:00","10:30"]]
-    BUSY_2 = [["11:00","12:30"], ["13:00","14:00"], ["9:00","10:30"], ["9:00","10:30"]]
+    BUSY_1 = [["9:00","10:30"], ["12:00","13:00"], ["16:00","18:00"]]
+    BUSY_2 = [["10:00","11:30"], ["12:30","14:30"], ["14:30","15:00"], ["16:00","17:00"]]
     BOUND_P1 = ["9:00", "20:00"]
     BOUND_P2 = ["10:00", "18:30"]
     MEET_TIME = 30
@@ -30,3 +30,45 @@ def test_to_schedule_list():
     NUM_LIST = [[0, 60], [600, 630], [1000, 1200], [1230, 1440]]
     OUTPUT = [["00:00", "01:00"], ["10:00", "10:30"], ["16:40", "20:00"], ["20:30", "00:00"]]
     assert scheduler.to_schedule_list(NUM_LIST) == OUTPUT
+
+def test_merge_independent():
+    list_1 = [[480, 540], [660, 780]]
+    list_2 = [[240, 360], [550, 660]]
+    merged = [[240, 360], [480, 540], [550, 780]]
+    assert scheduler.merge(list_1, list_2) == merged
+
+def test_merge_overlapping():
+    list_1 = [[480, 540], [660, 780]]
+    list_2 = [[420, 510], [720, 810]]
+    merged = [[420, 540], [660, 810]]
+    assert scheduler.merge(list_1, list_2) == merged
+
+def test_merge_containing():
+    list_1 = [[480, 540], [660, 810]]
+    list_2 = [[420, 660], [780, 810]]
+    merged = [[420, 660], [660, 810]]
+    assert scheduler.merge(list_1, list_2) == merged
+
+# def test_merge_compress():
+#     list_1 = [[480, 540], [660, 810]]
+#     list_2 = [[420, 660], [780, 810]]
+#     merged = [[420, 810]]
+#     assert scheduler.merge(list_1, list_2) == merged  
+
+def test_merge_boundaries():
+    list_1 = [[0, 480], [1200, 1440]]
+    list_2 = [[0, 660], [1100, 1360]]
+    merged = [[0, 660], [1100, 1440]]
+    assert scheduler.merge(list_1, list_2) == merged
+
+def test_free_slots_small():
+    busy_times = [[0, 480], [500,1200]]
+    assert scheduler.free_slots(busy_times, 30) == [[1200, 1440]]
+
+def test_free_slots_not_free():
+    busy_times = [[0,600], [630,1000], [1030,1400]]
+    assert scheduler.free_slots(busy_times, 60) == []
+
+def test_free_slots_multiple_free():
+    busy_times = [[400, 600], [900, 960], [1000,1100]]
+    assert scheduler.free_slots(busy_times, 30) == [[0, 400], [600, 900], [960, 1000], [1100, 1440]]
