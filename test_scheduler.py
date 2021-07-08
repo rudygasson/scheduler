@@ -59,13 +59,7 @@ def test_merge_containing():
     list_1 = [[480, 540], [660, 810]]
     list_2 = [[420, 660], [780, 810]]
     merged = [[420, 810]]
-    assert scheduler.merge(list_1, list_2) == merged
-
-# def test_merge_compress():
-#     list_1 = [[480, 540], [660, 810]]
-#     list_2 = [[420, 660], [780, 810]]
-#     merged = [[420, 810]]
-#     assert scheduler.merge(list_1, list_2) == merged  
+    assert scheduler.merge(list_1, list_2) == merged 
 
 def test_merge_boundaries():
     list_1 = [[0, 480], [1200, 1440]]
