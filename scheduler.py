@@ -22,16 +22,19 @@ def find_time_slots(busy_p1, bound_p1, busy_p2, bound_p2, time_requested):
 
     return to_schedule_list(available)
 
+
 def to_minutes(time_string):
     hours = int(time_string.split(":")[0])
     minutes = int(time_string.split(":")[1])
     return hours * 60 + minutes
 
+
 def to_hour_string(minutes_sum):
     hours = minutes_sum // 60 % 24
     minutes = minutes_sum % 60
     return f'{hours:02}:{minutes:02}'
-    
+
+
 def busy_number_list(busy_array, boundary_time):
     number_list = [[0, to_minutes(boundary_time[0])]]
     for slot in busy_array:
@@ -42,61 +45,28 @@ def busy_number_list(busy_array, boundary_time):
     number_list.append([to_minutes(boundary_time[1]), 1440])
     return number_list
 
+
 def merge(number_list_1, number_list_2):
-    len1 = len(number_list_1)
-    len2 = len(number_list_2)
-    index1 = index2 = 0
-    index_m = 0
-    merged_list = []
-    while index1 < len1 and index2 < len2:
-        print(index1, index2)
-        if number_list_1[index1][0] <= number_list_2[index2][0]:
-            merged_list.append([number_list_1[index1][0], 0])
-            if number_list_1[index1][1] < number_list_2[index2][0]:
-                # l1 and l2 separate
-                merged_list[index_m][1] = number_list_1[index1][1]
-                index1 += 1
-                index_m += 1
-            elif number_list_1[index1][1] <= number_list_2[index2][1]:
-                # l1 overlaps l2 left
-                merged_list[index_m][1] = number_list_2[index2][1]
-                index1 += 1
-                index2 += 1
-                index_m += 1
-            else:
-                # l1 contains l2
-                merged_list[index_m][1] = number_list_1[index1][1]
-                index1 += 1
-                index2 += 1
-                index_m += 1
-        else:
-            # l2 < l1
-            merged_list.append([number_list_2[index2][0], 0])
-            if number_list_2[index2][1] < number_list_1[index1][0]:
-                # l2 and l1 separate
-                merged_list[index_m][1] = number_list_2[index2][1]
-                index2 += 1
-                index_m +=1
-            elif number_list_2[index2][1] <= number_list_1[index1][1]:
-                # l2 overlaps l1 left
-                merged_list[index_m][1] = number_list_1[index1][1]
-                index2 += 1
-                index1 += 1
-                index_m += 1
-            else:
-                # l2 contains l1
-                merged_list[index_m][1] = number_list_2[index2][1]
-                index2 += 1
-                index1 += 1
-                index_m += 1
-            
-    return merged_list
+    merged_list = number_list_1 + number_list_2
+    merged_list.sort()
+   
+    # Merge two entries, if they overlap
+    squashed = [merged_list[0]]
+    index = 0
+    for slot in merged_list:
+        if slot[0] > squashed[index][1]:   # First slot does not overlap second
+            squashed.append(slot)
+            index += 1
+        elif slot[1] > squashed[index][1]: # First slot overlaps with second slot
+            squashed[index][1] = slot[1]
+
+    return squashed
 
 def free_slots(busy_times, duration):
     print(busy_times)
     free = []
     if busy_times[0][0] > duration:
-            free.append([0, busy_times[0][0]])
+        free.append([0, busy_times[0][0]])
     i = 0
     while i < len(busy_times) - 1:
         if busy_times[i+1][0] - busy_times[i][1] >= duration:
@@ -110,5 +80,6 @@ def free_slots(busy_times, duration):
 def to_schedule_list(number_array):
     schedule_list = []
     for slot in number_array:
-        schedule_list.append([to_hour_string(slot[0]), to_hour_string(slot[1])])
+        schedule_list.append(
+            [to_hour_string(slot[0]), to_hour_string(slot[1])])
     return schedule_list

@@ -37,6 +37,18 @@ def test_merge_independent():
     merged = [[240, 360], [480, 540], [550, 780]]
     assert scheduler.merge(list_1, list_2) == merged
 
+def test_merge_list_1_longer():
+    list_1 = [[480, 540], [660, 780], [800,900], [900,1000]]
+    list_2 = [[240, 360], [550, 660]]
+    merged = [[240, 360], [480, 540], [550, 780], [800,1000]]
+    assert scheduler.merge(list_1, list_2) == merged
+
+def test_merge_list_2_longer():
+    list_1 = [[240, 360], [550, 660]]
+    list_2 = [[480, 540], [660, 780], [800,900], [900,1000]]
+    merged = [[240, 360], [480, 540], [550, 780], [800,1000]]
+    assert scheduler.merge(list_1, list_2) == merged
+
 def test_merge_overlapping():
     list_1 = [[480, 540], [660, 780]]
     list_2 = [[420, 510], [720, 810]]
@@ -46,7 +58,7 @@ def test_merge_overlapping():
 def test_merge_containing():
     list_1 = [[480, 540], [660, 810]]
     list_2 = [[420, 660], [780, 810]]
-    merged = [[420, 660], [660, 810]]
+    merged = [[420, 810]]
     assert scheduler.merge(list_1, list_2) == merged
 
 # def test_merge_compress():
