@@ -17,11 +17,10 @@
 
 
 def find_time_slots(busy_p1, bound_p1, busy_p2, bound_p2, time_requested):
-    schedule_p1 = busy_number_list(busy_p1, bound_p1)
-    schedule_p2 = busy_number_list(busy_p2, bound_p2)
-    busy = merge(schedule_p1, schedule_p2)
-    available = free_slots(busy, time_requested)
-
+    schedule_p1 = busy_number_list(busy_p1, bound_p1)   # O(n)
+    schedule_p2 = busy_number_list(busy_p2, bound_p2)   # O(m)
+    busy = merge(schedule_p1, schedule_p2)              # O(n+m)
+    available = free_slots(busy, time_requested)        # O(n+m)
     return to_schedule_list(available)
 
 
@@ -44,13 +43,14 @@ def busy_number_list(busy_array, boundary_time):
             to_minutes(slot[0]),
             to_minutes(slot[1])
         ])
+    
     number_list.append([to_minutes(boundary_time[1]), 1440])
     return number_list
 
 
 def merge(number_list_1, number_list_2):
     merged_list = number_list_1 + number_list_2
-    merged_list.sort()
+    merged_list.sort()      # O(?)
    
     # Merge two slots if they overlap
     squashed = [merged_list[0]]
@@ -84,4 +84,5 @@ def to_schedule_list(number_array):
     for slot in number_array:
         schedule_list.append(
             [to_hour_string(slot[0]), to_hour_string(slot[1])])
+            
     return schedule_list
