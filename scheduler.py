@@ -1,14 +1,16 @@
 # Given two different day schedules
-# And two different time boundaries for the day
+# And two different availability windows for the day
 # And a duration for a meeting to be scheduled
 # Find the time slots that are available and long enough for both schedules
 #
 # Sample Input:
-# [["9:00","10:30"], ["12:00","13:00"], ["16:00","18:00"]]
-# ["9:00", "20:00"]
-# [["10:00","11:30"], ["12:30","14:30"], ["14:30","15:00"], ["16:00","17:00"]]
-# ["10:00", "18:30"]
-# 30
+# Person 1 
+# Schedule:         [["9:00","10:30"], ["12:00","13:00"], ["16:00","18:00"]]
+# Availability:     ["9:00", "20:00"]
+# Person 2 
+# Schedule:         [["10:00","11:30"], ["12:30","14:30"], ["14:30","15:00"], ["16:00","17:00"]]
+# Availability:     ["10:00", "18:30"]
+# Meeting duration: 30
 #
 # Sample Output:
 # [["11:30", "12:00"], ["15:00", "16:00"], ["18:00", "18:30"]]
@@ -50,14 +52,14 @@ def merge(number_list_1, number_list_2):
     merged_list = number_list_1 + number_list_2
     merged_list.sort()
    
-    # Merge two entries, if they overlap
+    # Merge two slots if they overlap
     squashed = [merged_list[0]]
     index = 0
     for slot in merged_list:
-        if slot[0] > squashed[index][1]:   # First slot does not overlap second
+        if slot[0] > squashed[index][1]:   # Slots do not overlap
             squashed.append(slot)
             index += 1
-        elif slot[1] > squashed[index][1]: # First slot overlaps with second slot
+        elif slot[1] > squashed[index][1]: # Slots overlap
             squashed[index][1] = slot[1]
 
     return squashed
